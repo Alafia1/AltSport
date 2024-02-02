@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  FINISHED
+  NOTSTARTED
+  INPROGRESS
+}
+
+// match table
+model Match {
+  id        Int       @id @unique
+  date      Int
+  leagueId  Int
+  seasonId  Int
+  homeTeamId Int
+  awayTeamId Int
+  slug      String
+  status    Status    // Assuming you have an enum type named Status
+}
+
+// league table
+model League {
+  id      Int       @id @unique
+  name    String
+  slug    String
+}
+
+// team table
+model Team {
+  id         Int       @id @unique
+  name       String
+  slug       String
+  shortname  String
+  code       String
+  national   Boolean
+
+}
+
+
+
+// homescore table
+model HomeScore {
+  id        Int       @id @default(autoincrement()) @unique
+  matchId   Int       @unique
+  period1   Int?
+  period2   Int?
+  period3   Int?
+  period4   Int?
+}
+
+// awayscore table
+model AwayScore {
+  id        Int       @id @default(autoincrement()) @unique
+  matchId   Int       @unique
+  period1   Int?
+  period2   Int?
+  period3   Int?
+  period4   Int?
+}
+
+// season table
+model Season {
+  id     Int       @id @default(autoincrement()) @unique
+  name   String
+  year   String
+}
