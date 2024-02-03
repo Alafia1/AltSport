@@ -6,7 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CornerDownLeft } from "lucide-react";
 import React from "react";
+import { BiFootball } from "react-icons/bi";
 
 type Category = {
   name: string;
@@ -109,8 +111,10 @@ async function getMatchStat(id: number) {
 
   var length = matchStats.statistics[1].groups.length;
 
+  const fullTime = matchStats.statistics[0];
   const first = matchStats.statistics[1];
   const second = matchStats.statistics[2];
+  const tvDataFull = fullTime.groups[length - 5];
   const tvData1 = first.groups[length - 5];
   const tvData2 = second.groups[length - 5];
   const corner1 = tvData1.statisticsItems[0];
@@ -127,13 +131,39 @@ async function getMatchStat(id: number) {
 
   return (
     <div>
-      <h3>
+      <span>
         Corner: <span>1st Half: {cornerFirst}</span>{" "}
-        <span>2nd Half: {cornerSecond}</span>
-      </h3>
+        <span>
+          2nd Half: {cornerSecond} Full-time:{" "}
+          {corner1.homeValue + corner2.homeValue} {"-"}{" "}
+          {corner2.awayValue + corner1.awayValue}{" "}
+        </span>{" "}
+        <span className="font-bold">
+          {corner1.homeValue +
+            corner2.homeValue +
+            corner2.awayValue +
+            corner1.awayValue}
+        </span>
+      </span>
       <h3>
         Yellow Card: <span>1st Half: {yellowFirst}</span>{" "}
-        <span>2nd Half: {yellowSecond}</span>
+        <span>
+          2nd Half: {yellowSecond} FT:{" "}
+          {tvData1.statisticsItems[2].homeValue +
+            tvData2.statisticsItems[2].homeValue}{" "}
+          -{" "}
+          {tvData1.statisticsItems[2].awayValue +
+            tvData2.statisticsItems[2].awayValue}
+        </span>
+        {"    "}
+        <span className="font-bold ml-3">
+          (
+          {tvData1.statisticsItems[2].homeValue +
+            tvData2.statisticsItems[2].homeValue +
+            tvData1.statisticsItems[2].awayValue +
+            tvData2.statisticsItems[2].awayValue}
+          )
+        </span>
       </h3>
       <h3>
         Throw In: <span>1st Half: {throwFirst}</span>{" "}
@@ -192,17 +222,21 @@ const page = async ({ params }: { params: { id: number } }) => {
                     </CardHeader>
                     <CardContent>
                       <div>
-                        <h3>
+                        <span>
+                          {" "}
+                          <BiFootball className="inline" />
                           Score:{" "}
-                          <span>
-                            1st Half: {match.homeScore?.period1} -{" "}
-                            {match.awayScore?.period1}
-                          </span>{" "}
-                          <span>
-                            2nd Half: {match.homeScore?.period2} -{" "}
-                            {match.awayScore?.period2}
-                          </span>
-                        </h3>
+                        </span>
+                        <span>
+                          1st Half: {match.homeScore?.period1} -{" "}
+                          {match.awayScore?.period1}
+                        </span>{" "}
+                        <span>
+                          2nd Half: {match.homeScore?.period2} -{" "}
+                          {match.awayScore?.period2} FullTime:{" "}
+                          {match.homeScore?.current} -{" "}
+                          {match.awayScore?.current}
+                        </span>
                         {match.status.type === "finished" &&
                           getMatchStat(match.id)}
                       </div>
