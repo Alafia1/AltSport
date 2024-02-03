@@ -49,7 +49,7 @@ type Events = {
 
 async function getMatchList() {
   const res = await fetch(
-    "https://api.sofascore.com/api/v1/sport/football/scheduled-events/2024-02-02",
+    "https://api.sofascore.com/api/v1/sport/football/scheduled-events/2024-02-04",
     { next: { revalidate: 600 } }
   );
 
@@ -74,31 +74,6 @@ const MatchList = async ({ sport }: MatchListProps) => {
 
   return (
     <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>{matchEvents[0].tournament.category.name}</CardTitle>
-          <CardDescription>{matchEvents[0].tournament.name}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between">
-            <div className="flex justify-around w-1/6">
-              <div className="flex flex-col items-center">
-                <p>{getTime(matchEvents[0].startTimestamp)}</p>
-                <p>-</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <p>{matchEvents[0].homeTeam.name}</p>
-                <p>{matchEvents[0].awayTeam.name}</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-center mr-10">
-              <p>{matchEvents[0].homeScore?.current || "-"}</p>
-              <p>{matchEvents[0].awayScore?.current || "-"}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <div className="bg-slate-200">
         {matchEvents.map((match) => (
           <Link key={match.id} href={`/match/${match.id}`}>
@@ -122,8 +97,8 @@ const MatchList = async ({ sport }: MatchListProps) => {
                 </div>
               </div>
               <div className="flex flex-col items-center justify-end mr-10">
-                <p>{match.homeScore?.current || "-"}</p>
-                <p>{match.awayScore?.current || "-"}</p>
+                <p>{match.homeScore ? match.homeScore?.current : "-"}</p>
+                <p>{match.awayScore ? match.awayScore?.current : "-"}</p>
               </div>
             </div>
           </Link>
