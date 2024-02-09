@@ -42,7 +42,9 @@ export default function Home() {
               <TabsContent value="football">
                 <MatchList sport="football" />
               </TabsContent>
-              <TabsContent value="basketball">basketball</TabsContent>
+              <TabsContent value="basketball">
+                <MatchList sport="basketball" />
+              </TabsContent>
             </Tabs>
             <div>
               <DatePicker />

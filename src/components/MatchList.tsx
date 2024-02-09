@@ -47,9 +47,9 @@ type Events = {
 1706889427000;
 1706893200;
 
-async function getMatchList() {
+async function getMatchList(sports: string) {
   const res = await fetch(
-    "https://api.sofascore.com/api/v1/sport/football/scheduled-events/2024-02-04",
+    `https://api.sofascore.com/api/v1/sport/${sports}/scheduled-events/2024-02-09`,
     { next: { revalidate: 600 } }
   );
 
@@ -70,13 +70,13 @@ function getTime(timeStamp: number) {
   return formattedTime;
 }
 const MatchList = async ({ sport }: MatchListProps) => {
-  const matchEvents = (await getMatchList()).events;
+  const matchEvents = (await getMatchList(sport)).events;
 
   return (
     <div>
       <div className="bg-slate-200">
         {matchEvents.map((match) => (
-          <Link key={match.id} href={`/match/${match.id}`}>
+          <Link key={match.id} href={`/${sport}/${match.id}`}>
             <div className="bg-slate-800 flex justify-between text-slate-200 p-3 border-2 rounded-lg">
               <div className="flex w-2/4">
                 <div className="flex flex-col-reverse px-5">
