@@ -49,7 +49,7 @@ type Events = {
 
 async function getMatchList(sports: string) {
   const res = await fetch(
-    `https://api.sofascore.com/api/v1/sport/${sports}/scheduled-events/2024-02-09`,
+    `https://api.sofascore.com/api/v1/sport/${sports}/scheduled-events/2024-02-10`,
     { next: { revalidate: 600 } }
   );
 
