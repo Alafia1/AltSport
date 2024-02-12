@@ -61,6 +61,12 @@ export const IceAnalysis = (
   const awayQ2Against = [];
   const awayQ3Against = [];
   const awayTotalAgainst: number[] = [];
+  const homeEachPeriodOver1: number[] = [];
+  const awayEachPeriodOver1: number[] = [];
+  const homeEachPeriodOver2: number[] = [];
+  const awayEachPeriodOver2: number[] = [];
+  const homeEachPeriodOver3: number[] = [];
+  const awayEachPeriodOver3: number[] = [];
 
   home.events
     .slice(-10)
@@ -84,6 +90,19 @@ export const IceAnalysis = (
         homeQ2Against.push(match.homeScore?.period2);
         homeQ3Against.push(match.homeScore?.period3);
         homeTotalAgainst.push(match.homeScore?.current!);
+      }
+      const p1 = match.homeScore?.period1! + match.awayScore?.period1!;
+      const p2 = match.homeScore?.period2! + match.awayScore?.period2!;
+      const p3 = match.homeScore?.period3! + match.awayScore?.period3!;
+
+      if (p1 > 1 && p2 > 1 && p3 > 1) {
+        homeEachPeriodOver1.push(1);
+      }
+      if (p1 > 2 && p2 > 2 && p3 > 2) {
+        homeEachPeriodOver2.push(1);
+      }
+      if (p1 > 3 && p2 > 3 && p3 > 3) {
+        homeEachPeriodOver3.push(1);
       }
     });
 
@@ -110,18 +129,33 @@ export const IceAnalysis = (
         awayQ3Against.push(match.homeScore?.period3!);
         awayTotalAgainst.push(match.homeScore?.current!);
       }
+      const p1 = match.homeScore?.period1! + match.awayScore?.period1!;
+      const p2 = match.homeScore?.period2! + match.awayScore?.period2!;
+      const p3 = match.homeScore?.period3! + match.awayScore?.period3!;
+
+      if (p1 > 1 && p2 > 1 && p3 > 1) {
+        awayEachPeriodOver1.push(1);
+      }
+      if (p1 > 2 && p2 > 2 && p3 > 2) {
+        awayEachPeriodOver2.push(1);
+      }
+      if (p1 > 3 && p2 > 3 && p3 > 3) {
+        awayEachPeriodOver3.push(1);
+      }
     });
 
   const totalHome = homeTotal.map(
     (value, index) => value + homeTotalAgainst[index]
   );
   const totalHomeUnder7 = totalHome.filter((number) => number <= 7).length;
+  const totalHomeOver4 = totalHome.filter((number) => number >= 4).length;
 
   const totalAway = awayTotal.map(
     (value, index) => value + awayTotalAgainst[index]
   );
 
   const totalAwayUnder7 = totalAway.filter((number) => number <= 7).length;
+  const totalAwayOver4 = totalAway.filter((number) => number > 4).length;
 
   const totalHomeP1 = homeQ1.map(
     (value, index) => value + homeQ1Against[index]
@@ -136,8 +170,20 @@ export const IceAnalysis = (
   if (totalHomeUnder7 >= 8 && totalAwayUnder7 >= 8) {
     possibleOutcome.push("Total Under 7.5 - YES");
   }
+  if (totalHomeOver4 > 7 && totalAwayOver4 > 7)
+    possibleOutcome.push("Total Over 4.5 - YES");
   if (totalHomeP1Over1 >= 8 && totalAwayP1Over1 >= 8)
     possibleOutcome.push("1st Period Over 0.5 - YES");
+  if (homeEachPeriodOver1.length > 7 && awayEachPeriodOver1.length > 7)
+    possibleOutcome.push("Each Period Over 1.5 - YES");
+  if (homeEachPeriodOver1.length < 3 && awayEachPeriodOver1.length < 3)
+    possibleOutcome.push("Each Period Over 1.5 - NO");
+  if (homeEachPeriodOver2.length > 7 && awayEachPeriodOver2.length > 7)
+    possibleOutcome.push("Each Period Over 2.5 - YES");
+  if (homeEachPeriodOver2.length < 3 && awayEachPeriodOver2.length < 3)
+    possibleOutcome.push("Each Period Over 2.5 - No");
+  if (homeEachPeriodOver3.length > 7 && awayEachPeriodOver3.length > 7)
+    possibleOutcome.push("Each Period Over 3.5 - YES");
 
   return possibleOutcome;
 };
