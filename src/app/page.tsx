@@ -9,7 +9,6 @@ import {
   GiVolleyballBall,
 } from "react-icons/gi";
 import { BiBasketball } from "react-icons/bi";
-import DatePicker from "@/components/DatePicker";
 import MatchListTest from "@/components/MatchListTest";
 
 export default function Home() {
