@@ -1,12 +1,3 @@
-import { env } from "process";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { match } from "assert";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -44,12 +35,10 @@ type Event = {
 type Events = {
   events: Event[];
 };
-1706889427000;
-1706893200;
 
 async function getMatchList(sports: string) {
   const res = await fetch(
-    `https://api.sofascore.com/api/v1/sport/${sports}/scheduled-events/2024-02-12`,
+    `https://api.sofascore.com/api/v1/sport/${sports}/scheduled-events/2024-02-15`,
     { next: { revalidate: 600 } }
   );
 
