@@ -11,10 +11,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDateStore } from "@/state/date";
 
 const DatePicker = () => {
-  const [date, setDate] = useState<Date>();
+  const [dates, setDates] = useState<Date>(new Date());
+
+  const { date, setDate } = useDateStore();
+  useEffect(() => {
+    setDate(format(dates, "yyyy-MM-dd"));
+  }, [dates, date]);
   return (
     <div>
       <Popover>
@@ -33,7 +39,7 @@ const DatePicker = () => {
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
+            selected={dates}
             onSelect={setDate}
             initialFocus
           />

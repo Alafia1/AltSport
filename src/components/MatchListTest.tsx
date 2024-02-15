@@ -42,9 +42,9 @@ type Events = {
   events: Event[];
 };
 
-async function getMatchList(sports: string) {
+async function getMatchList(sports: string, date: string) {
   const res = await fetch(
-    `${process.env.API_URL}/api/v1/sport/${sports}/scheduled-events/2024-02-15`,
+    `${process.env.API_URL}/api/v1/sport/${sports}/scheduled-events/${date}`,
     { next: { revalidate: 600 } }
   );
 
@@ -65,7 +65,8 @@ function getTime(timeStamp: number) {
   return formattedTime;
 }
 const MatchListTest = async ({ sport }: MatchListProps) => {
-  const matchEvents = (await getMatchList(sport)).events;
+  const date = format(new Date(), "yyyy-MM-dd");
+  const matchEvents = (await getMatchList(sport, date)).events;
   const countries = matchEvents.map((match) => match.tournament.category.name);
   const uniquesCountries = countries.filter(
     (value, index, self) => self.indexOf(value) === index

@@ -13,14 +13,13 @@ import DatePicker from "@/components/DatePicker";
 import MatchListTest from "@/components/MatchListTest";
 
 export default function Home() {
-  //const [date, setDate] = useState<Date>();
   return (
     <main className="relative">
       <div className="bg-slate-600 h-10">
         <MaxWidthWrapper>
           <div className="flex justify-between">
-            <Tabs defaultValue="icehockey" className="w-full">
-              <TabsList className="bg-slate-600 active:bg-slate-800">
+            <Tabs defaultValue="icehockey" className="w-full ">
+              <TabsList className="bg-slate-600 active:bg-slate-800 flex flex-col md:flex-row">
                 <TabsTrigger value="football">
                   <GiSoccerBall className="mr-2" /> Football
                 </TabsTrigger>
@@ -73,9 +72,7 @@ export default function Home() {
                 <MatchListTest sport="baseball" />
               </TabsContent>
             </Tabs>
-            <div>
-              <DatePicker />
-            </div>
+            <div>{/* <DatePicker /> */}</div>
           </div>
         </MaxWidthWrapper>
       </div>
