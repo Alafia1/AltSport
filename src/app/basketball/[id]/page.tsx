@@ -63,7 +63,7 @@ type Details = {
 };
 
 async function getEventDetails(id: number) {
-  const res = await fetch(`https://api.sofascore.com/api/v1/event/${id}`, {
+  const res = await fetch(`${process.env.API_URL}/api/v1/event/${id}`, {
     next: { revalidate: 600 },
   });
 
@@ -79,7 +79,7 @@ async function getEventDetails(id: number) {
 
 async function getTeamMatch(id: number) {
   const res = await fetch(
-    `https://api.sofascore.com/api/v1/team/${id}/events/last/0`,
+    `${process.env.API_URL}/api/v1/team/${id}/events/last/0`,
     {
       next: { revalidate: 600 },
     }
