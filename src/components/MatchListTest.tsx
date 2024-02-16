@@ -67,7 +67,10 @@ function getTime(timeStamp: number) {
 const MatchListTest = async ({ sport }: MatchListProps) => {
   const date = format(new Date(), "yyyy-MM-dd");
   const matchEvents = (await getMatchList(sport, date)).events;
-  const countries = matchEvents.map((match) => match.tournament.category.name);
+  const matchDay = matchEvents.filter(
+    (match) => format(match.startTimestamp * 1000, "yyyy-MM-dd") === date
+  );
+  const countries = matchDay.map((match) => match.tournament.category.name);
   const uniquesCountries = countries.filter(
     (value, index, self) => self.indexOf(value) === index
   );
@@ -87,7 +90,7 @@ const MatchListTest = async ({ sport }: MatchListProps) => {
                 </div>
               </CollapsibleTrigger>
 
-              {matchEvents.map((match) =>
+              {matchDay.map((match) =>
                 match.tournament.category.name === country ? (
                   <CollapsibleContent key={match.id}>
                     <Link
