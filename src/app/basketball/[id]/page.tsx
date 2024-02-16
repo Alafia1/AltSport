@@ -129,7 +129,7 @@ const page = async ({ params }: { params: { id: number } }) => {
             </div>
           </CardContent>
         </Card>
-        <div className="flex gap-2 mt-2">
+        <div className="flex flex-col md:flex-row gap-2 mt-2">
           <div className="flex-1 border-slate-800 border-2 rounded-md">
             <div className="w-full">
               <div className="flex justify-center font-semibold text-slate-200">

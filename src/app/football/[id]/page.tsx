@@ -203,7 +203,7 @@ const page = async ({ params }: { params: { id: number } }) => {
           </CardHeader>
           <CardContent></CardContent>
         </Card>
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
           <div className="flex-1">
             {homeMatches
               .slice(-10)
