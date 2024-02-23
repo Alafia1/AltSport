@@ -6,6 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 import { BiFootball } from "react-icons/bi";
 
@@ -92,7 +101,7 @@ async function getEventDetails(id: number) {
   return event;
 }
 
-async function getMatchStat(id: number) {
+async function getMatchStat(id: number, team: boolean) {
   const stats = await fetch(
     `https://api.sofascore.com/api/v1/event/${id}/statistics`,
     {
@@ -108,68 +117,26 @@ async function getMatchStat(id: number) {
 
   const matchStats: StatisticsData = await stats.json();
 
-  var length = matchStats.statistics[1].groups.length;
-
-  const fullTime = matchStats.statistics[0];
-  const first = matchStats.statistics[1];
-  const second = matchStats.statistics[2];
-  const tvDataFull = fullTime.groups[length - 5];
-  const tvData1 = first.groups[length - 5];
-  const tvData2 = second.groups[length - 5];
-  const corner1 = tvData1.statisticsItems[0];
-  const corner2 = tvData2.statisticsItems[0];
-
-  const cornerFirst = `${corner1.home} - ${corner1.away}`;
-  const cornerSecond = `${corner2.home} - ${corner2.away}`;
-
-  const yellowFirst = `${tvData1.statisticsItems[2].home} - ${tvData1.statisticsItems[2].away}`;
-  const yellowSecond = `${tvData2.statisticsItems[2].home} - ${tvData2.statisticsItems[2].away}`;
-
-  const throwFirst = `${tvData1.statisticsItems[4].home} - ${tvData1.statisticsItems[4].away}`;
-  const throwSecond = `${tvData2.statisticsItems[4].home} - ${tvData2.statisticsItems[4].away}`;
-
-  return (
-    <div>
-      <span>
-        Corner: <span>1st Half: {cornerFirst}</span>{" "}
-        <span>
-          2nd Half: {cornerSecond} Full-time:{" "}
-          {corner1.homeValue + corner2.homeValue} {"-"}{" "}
-          {corner2.awayValue + corner1.awayValue}{" "}
-        </span>{" "}
-        <span className="font-bold">
-          {corner1.homeValue +
-            corner2.homeValue +
-            corner2.awayValue +
-            corner1.awayValue}
-        </span>
-      </span>
-      <h3>
-        Yellow Card: <span>1st Half: {yellowFirst}</span>{" "}
-        <span>
-          2nd Half: {yellowSecond} FT:{" "}
-          {tvData1.statisticsItems[2].homeValue +
-            tvData2.statisticsItems[2].homeValue}{" "}
-          -{" "}
-          {tvData1.statisticsItems[2].awayValue +
-            tvData2.statisticsItems[2].awayValue}
-        </span>
-        {"    "}
-        <span className="font-bold ml-3">
-          (
-          {tvData1.statisticsItems[2].homeValue +
-            tvData2.statisticsItems[2].homeValue +
-            tvData1.statisticsItems[2].awayValue +
-            tvData2.statisticsItems[2].awayValue}
-          )
-        </span>
-      </h3>
-      <h3>
-        Throw In: <span>1st Half: {throwFirst}</span>{" "}
-        <span>2nd Half: {throwSecond}</span>
-      </h3>
-    </div>
-  );
+  if (matchStats.statistics[0]) {
+    let length = matchStats.statistics[0].groups.length;
+    const tvDataFull = matchStats.statistics[0].groups[length - 5];
+    return (
+      <>
+        <TableCell>
+          {team ? (
+            <span>{tvDataFull.statisticsItems[0].home}</span>
+          ) : (
+            <span>{tvDataFull.statisticsItems[0].away}</span>
+          )}
+        </TableCell>
+        <TableCell>
+          {team
+            ? tvDataFull.statisticsItems[0].away
+            : tvDataFull.statisticsItems[0].home}
+        </TableCell>
+      </>
+    );
+  }
 }
 async function getTeamMatch(id: number) {
   const res = await fetch(
@@ -203,82 +170,133 @@ const page = async ({ params }: { params: { id: number } }) => {
           </CardHeader>
           <CardContent></CardContent>
         </Card>
-        <div className="flex flex-col md:flex-row">
-          <div className="flex-1">
-            {homeMatches
-              .slice(-10)
-              .reverse()
-              .map((match) => (
-                <div key={match.id}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>
-                        {match.homeTeam.name} Vs {match.awayTeam.name}
-                      </CardTitle>
-                      <CardDescription>
-                        {matchEvent.tournament.name}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div>
-                        <span>
-                          {" "}
-                          <BiFootball className="inline" />
-                          Score:{" "}
-                        </span>
-                        <span>
-                          1st Half: {match.homeScore?.period1} -{" "}
-                          {match.awayScore?.period1}
-                        </span>{" "}
-                        <span>
-                          2nd Half: {match.homeScore?.period2} -{" "}
-                          {match.awayScore?.period2} FullTime:{" "}
-                          {match.homeScore?.current} -{" "}
-                          {match.awayScore?.current}
-                        </span>
-                        {match.status.type === "finished" &&
-                          getMatchStat(match.id)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-          </div>
-          <div className="flex-1">
-            {awayMatches
-              .slice(-10)
-              .reverse()
-              .map((match) => (
-                <div key={match.id}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>
-                        {match.homeTeam.name} Vs {match.awayTeam.name}
-                      </CardTitle>
-                      <CardDescription>
-                        {matchEvent.tournament.name}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div>
-                        <h3>
-                          Score:{" "}
+        <div className="flex flex-col md:flex-row gap-2 mt-2">
+          <div className="flex-1 border-slate-800 border-2 rounded-md">
+            <div className="w-full">
+              <div className="flex justify-center font-semibold text-slate-200">
+                {matchEvent.homeTeam.name}
+              </div>
+              <Table>
+                <TableCaption>
+                  Last 10 games for {matchEvent.homeTeam.name}
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Against</TableHead>
+                    <TableHead>Score For</TableHead>
+                    <TableHead>Score Ag</TableHead>
+                    <TableHead>Corner For</TableHead>
+                    <TableHead>Corner Ag</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="text-xs font-thin">
+                  {homeMatches
+                    .slice(-10)
+                    .reverse()
+                    .map((match) => (
+                      <TableRow key={match.id} className="text-slate-200">
+                        <TableCell>
+                          {match.homeTeam.id === matchEvent.homeTeam.id
+                            ? match.awayTeam.name
+                            : match.homeTeam.name}{" "}
+                          (
+                          {match.homeTeam.id === matchEvent.homeTeam.id
+                            ? "H"
+                            : "A"}
+                          )
+                        </TableCell>
+                        <TableCell>
                           <span>
-                            1st Half: {match.homeScore?.period1} -{" "}
-                            {match.awayScore?.period1}
-                          </span>{" "}
-                          <span>
-                            2nd Half: {match.homeScore?.period2} -{" "}
-                            {match.awayScore?.period2}
+                            {match.homeTeam.id === matchEvent.homeTeam.id ? (
+                              <span>{match.homeScore?.current}</span>
+                            ) : (
+                              <span>{match.awayScore?.current}</span>
+                            )}
                           </span>
-                        </h3>
+                        </TableCell>
+                        <TableCell>
+                          <span>
+                            {match.homeTeam.id === matchEvent.homeTeam.id ? (
+                              <span>{match.awayScore?.current}</span>
+                            ) : (
+                              <span>{match.homeScore?.current}</span>
+                            )}
+                          </span>
+                        </TableCell>
                         {match.status.type === "finished" &&
-                          getMatchStat(match.id)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
+                          getMatchStat(
+                            match.id,
+                            match.homeTeam.id === matchEvent.homeTeam.id
+                          )}
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+          <div className="flex-1 border-slate-800 border-2 rounded-md">
+            <div className="w-full">
+              <div className="flex justify-center font-semibold text-slate-200">
+                {matchEvent.awayTeam.name}
+              </div>
+              <Table>
+                <TableCaption>
+                  Last 10 games for {matchEvent.awayTeam.name}
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Against</TableHead>
+                    <TableHead>Score For</TableHead>
+                    <TableHead>Score Ag</TableHead>
+                    <TableHead>Corner For</TableHead>
+                    <TableHead>Corner Ag</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="text-xs font-thin">
+                  {awayMatches
+                    .slice(-10)
+                    .reverse()
+                    .map((match) => (
+                      <TableRow key={match.id} className="text-slate-200">
+                        <TableCell>
+                          {match.homeTeam.id === matchEvent.awayTeam.id
+                            ? match.awayTeam.name
+                            : match.homeTeam.name}{" "}
+                          (
+                          {match.homeTeam.id === matchEvent.awayTeam.id
+                            ? "H"
+                            : "A"}
+                          )
+                        </TableCell>
+                        <TableCell>
+                          <span>
+                            {match.homeTeam.id === matchEvent.awayTeam.id ? (
+                              <span>{match.homeScore?.current}</span>
+                            ) : (
+                              <span>{match.awayScore?.current}</span>
+                            )}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span>
+                            {match.homeTeam.id === matchEvent.awayTeam.id ? (
+                              <span>{match.awayScore?.current}</span>
+                            ) : (
+                              <span>{match.homeScore?.current}</span>
+                            )}
+                          </span>
+                        </TableCell>
+
+                        {match.status.type === "finished" &&
+                          getMatchStat(
+                            match.id,
+                            match.homeTeam.id === matchEvent.awayTeam.id
+                          )}
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </MaxWidthWrapper>

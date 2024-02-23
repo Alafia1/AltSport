@@ -17,7 +17,7 @@ export default function Home() {
       <div className="bg-slate-600 h-10">
         <MaxWidthWrapper>
           <div className="flex justify-between">
-            <Tabs defaultValue="icehockey" className="w-full ">
+            <Tabs defaultValue="football" className="w-full ">
               <TabsList className="bg-slate-600 active:bg-slate-800 flex flex-col md:flex-row">
                 <TabsTrigger value="football">
                   <GiSoccerBall className="mr-2" /> Football
